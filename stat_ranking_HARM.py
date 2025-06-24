@@ -1,9 +1,3 @@
-"""def get_phy_damage(base_, attack_, weaponn_dmg_, weakspot_dmg_bonus,crit_rate, crit_damage, enemy_dmg_bonus, bullet_dmg_bonus, vulnerability, weakspot = False):
-    if weakspot:
-        return base_*(1+attack_)*(1+weaponn_dmg_)*(1+crit_rate*crit_damage)*(1+weakspot_dmg_bonus)*(1 + enemy_dmg_bonus)*(1+bullet_dmg_bonus)*(1 + vulnerability)
-    else:
-        return base_*(1+attack_)*(1+weaponn_dmg_)*(1+crit_rate*crit_damage)*(1 + enemy_dmg_bonus)*(1+bullet_dmg_bonus)*(1 + vulnerability)
-"""
 
 # weap and set effects
 weapon_base_atk = 2238
@@ -19,25 +13,12 @@ bullet_dmg_bonus = 0.05 # ammo budd
 # calib
 crit_rate += 0.062+0.078
 
-
-"""
-Damage sources:
-Bullet type y
-Damage type 
-Weapon calib y
-Weapon self y
-Cradle y
-Mods 
-Sets y
-substats
-"""
 # bullseye
 vulnerability = 0
 bullseye = 1
 
 if bullseye:
     vulnerability = 0.16
-
 
 # mods
 enemy_dmg_bonus += 0.08 + 0.06 + 0.08
@@ -66,10 +47,6 @@ bounce_dmg_bonus += 0.05*(5/2)  # max 5,  triggers every time bounce triggers. (
 # print(f"The crit damage is: {crit_dmg*100:.2f}%\ncrit rate is: {crit_rate*100:.2f}")
 
 flag_weakspot = 1
-# damage = get_phy_damage(weapon_base_atk, attack, weapon_dmg_bonus, weakspot_dmg_bonus, crit_rate, crit_dmg, enemy_dmg_bonus, bullet_dmg_bonus, vulnerability, flag_weakspot)
-# result = 8572
-# print(f"The Single wk/toggle damage is: {damage:.2f} \nAbove Match ratio:   {damage/result*100:.0f}%\n" ,sep = '', end = '')
-
 
 # MAIN PHY DMG DONE, INCLUDING BOUNCE:
 
@@ -106,10 +83,33 @@ Total_per_hit = get_bounce_damage(bounce_chance, bounce_hits, bounce_dmg_bonus, 
 result = ((348 + 293 + 457 + 492 + 421 + 450 + 358 + 562 + 450 + 366 + 355)*1000/11 - 15000) / 9 # Non cradle ((250 + 285 + 369 + 385 + 299 + 341 + 267 + 356)*1000/8 - 14000) / 9
 print(f"\nPer shot dmg is: {Total_per_hit:.2f}\t\tManual: {result}\nTheory's Match ratio:   {Total_per_hit/result*100:.0f}%\n")
 
+# new damage:
 
+#wk
+new_wk = weakspot_dmg_bonus + 0.09
+new_wp = weapon_dmg_bonus + 0.06
+new_crit_dmg = crit_dmg + 0.15
+new_crit_rate = crit_rate + 0.075
+new_bounce_dmg = bounce_dmg_bonus + 0.06
+new_bounce_crit = bounce_crit_dmg_bonus + 0.25
+new_enemy_dmg_bonus = enemy_dmg_bonus + 0.06
 
-# bounce weakspot data
-"""
-wk =        2 + 1 + 2 + 2 + 2 + 0 + 4 + 1 + 2 + 4 + 1 + 1 + 1 + 1 + 1 + 4 + 2 + 0 + 1 + 2 + 2 + 4 + 2 + 2 + 0 + 3 + 2 + 2 + 3 + 3 + 1 + 3 + 0 + 4
-normal =    2 + 3 + 2 + 2 + 2 + 4 + 0 + 3 + 2 + 0 + 3 + 3 + 3 + 3 + 3 + 0 + 2 + 4 + 3 + 2 + 2 + 0 + 2 + 2 + 4 + 1 + 2 + 2 + 1 + 1 + 3 + 1 + 4 + 0
-print(f"Chance of bounce wk is: {wk/(wk+normal):.2f}%")"""
+wk = get_bounce_damage(bounce_chance, bounce_hits, bounce_dmg_bonus, bounce_crit_dmg_bonus, weapon_base_atk, attack, weapon_dmg_bonus, new_wk, crit_rate, crit_dmg, enemy_dmg_bonus, bullet_dmg_bonus, vulnerability, flag_weakspot)
+wp = get_bounce_damage(bounce_chance, bounce_hits, bounce_dmg_bonus, bounce_crit_dmg_bonus, weapon_base_atk, attack, new_wp, weakspot_dmg_bonus, crit_rate, crit_dmg, enemy_dmg_bonus, bullet_dmg_bonus, vulnerability, flag_weakspot)
+cd = get_bounce_damage(bounce_chance, bounce_hits, bounce_dmg_bonus, bounce_crit_dmg_bonus, weapon_base_atk, attack, weapon_dmg_bonus, weakspot_dmg_bonus, crit_rate, new_crit_dmg, enemy_dmg_bonus, bullet_dmg_bonus, vulnerability, flag_weakspot)
+cr = get_bounce_damage(bounce_chance, bounce_hits, bounce_dmg_bonus, bounce_crit_dmg_bonus, weapon_base_atk, attack, weapon_dmg_bonus, weakspot_dmg_bonus, new_crit_rate, crit_dmg, enemy_dmg_bonus, bullet_dmg_bonus, vulnerability, flag_weakspot)
+bounce = get_bounce_damage(bounce_chance, bounce_hits, new_bounce_dmg, bounce_crit_dmg_bonus, weapon_base_atk, attack, weapon_dmg_bonus, weakspot_dmg_bonus, crit_rate, crit_dmg, enemy_dmg_bonus, bullet_dmg_bonus, vulnerability, flag_weakspot)
+bounce_crit = get_bounce_damage(bounce_chance, bounce_hits, bounce_dmg_bonus, new_bounce_crit, weapon_base_atk, attack, weapon_dmg_bonus, weakspot_dmg_bonus, crit_rate, crit_dmg, enemy_dmg_bonus, bullet_dmg_bonus, vulnerability, flag_weakspot)
+enemy_dmg = get_bounce_damage(bounce_chance, bounce_hits, bounce_dmg_bonus, bounce_crit_dmg_bonus, weapon_base_atk, attack, weapon_dmg_bonus, weakspot_dmg_bonus, crit_rate, crit_dmg, new_enemy_dmg_bonus, bullet_dmg_bonus, vulnerability, flag_weakspot)
+
+dict_new_dmgs = {"wk\t":wk, "wp\t": wp, "cd\t":cd, "cr\t": cr, "bounce": bounce, "bounce crit": bounce_crit, "enemy_dmg": enemy_dmg}
+
+# sorting from google, at desending order (too lazy to this on my own, saving 15 min):
+sorted_items_desc = sorted(dict_new_dmgs.items(), key=lambda item: item[1], reverse=True)
+sorted_dict_desc = dict(sorted_items_desc)
+
+i = 0
+for key in sorted_dict_desc:
+    i+=1
+    damage = sorted_dict_desc[key]
+    print(f"Number {i}: {key}\tRatio Increase: {damage/Total_per_hit*100-100:.2f}%\tdamage: {damage:.0f}")
