@@ -11,7 +11,7 @@ enemy_dmg_bonus = 0
 bullet_dmg_bonus = 0.05 # ammo buff
 
 # calib
-crit_rate += 0.063+0.087
+crit_rate += 0.062+0.078
 
 
 vulnerability = 0
@@ -34,13 +34,13 @@ bounce_crit_dmg_bonus = 0.25    # weapon main stat
 bounce_weakspot_bonus = 0
 bounce_chance += base_bounce_chance*0.048
 
-list_mod_substats = {"hat":{"cd": 0.15, "wp_dmg": 0, "ene_dmg": 0.06}, 
+list_mod_substats = {"hat":{"cd": 0.15, "wp_dmg": 0, "ene_dmg": 0.036}, 
                      "mask": {"bounce_dmg": 0.06, "bounce_cd": 0, "bounce_chance": 0.048}, 
-                     "top":{"cd": 0.12, "wp_dmg": 0.06, "ene_dmg": 0.06}, 
+                     "top":{"cd": 0.12, "wp_dmg": 0.06, "ene_dmg": 0}, 
                      "pant":{"cd": 0.12, "wp_dmg": 0.024, "ene_dmg": 0}, 
-                     "gloves":{"cd": 0.12, "wp_dmg": 0.048, "ene_dmg": 0.08}, 
+                     "gloves":{"cd": 0.12, "wp_dmg": 0.048, "ene_dmg": 0.06}, 
                      "shoes":{"cd": 0.15, "wp_dmg": 0, "ene_dmg": 0}, 
-                     "weapon": {"bounce_dmg": 0.048, "bounce_cd": 0.2, "ene_dmg": 0.08}}
+                     "weapon": {"bounce_dmg": 0.048, "bounce_cd": 0.2, "ene_dmg": 0}}
 
 for key in list_mod_substats:
     dict_armor = list_mod_substats[key]
@@ -48,18 +48,25 @@ for key in list_mod_substats:
         match(stat):
             case "cd":
                 crit_dmg += dict_armor[stat]
+                break
             case "wp_dmg":
                 weapon_dmg_bonus += dict_armor[stat]
+                break
             case "ene_dmg":
                 enemy_dmg_bonus += dict_armor[stat]
+                break
             case "bounce_dmg":
                 bounce_dmg_bonus += dict_armor[stat]
+                break
             case "bounce_cd":
                 bounce_crit_dmg_bonus += dict_armor[stat]
+                break
             case "bounce_chance":
                 bounce_chance += dict_armor[stat]*base_bounce_chance
+                break
             case "wk_dmg":
                 weakspot_dmg_bonus += dict_armor[stat]
+                break
                 
 
 
@@ -107,14 +114,7 @@ Total_per_hit = get_bounce_damage(bounce_chance, bounce_hits, bounce_dmg_bonus, 
 
 # testing
 # database of manual per hit tests:
-dmg_per_mag = [441, 540, 380, 377, 635]
-result =  -15000    # bulls eye proc
-mag_size = 9
-n = len(dmg_per_mag)
-for i in dmg_per_mag:
-    result+=i*1000
-result = result/mag_size/n
-# result = ((348 + 293 + 457 + 492 + 421 + 450 + 358 + 562 + 450 + 366 + 355)*1000/11 - 15000) / 9 # Non cradle ((250 + 285 + 369 + 385 + 299 + 341 + 267 + 356)*1000/8 - 14000) / 9
+result = ((443)*1000/1 - 15000) / 9 # Non cradle ((250 + 285 + 369 + 385 + 299 + 341 + 267 + 356)*1000/8 - 14000) / 9 # ((348 + 293 + 457 + 492 + 421 + 450 + 358 + 562 + 450 + 366 + 355)*1000/11 - 15000) / 9
 print(f"\nPer shot dmg is: {Total_per_hit:.2f}\t\tManual: {result}\nTheory's Match ratio:   {Total_per_hit/result*100:.0f}%\n")
 
 # new damage:

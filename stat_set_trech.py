@@ -1,70 +1,45 @@
-
 # weap and set effects
 weapon_base_atk = 2238
 weakspot_dmg_bonus = 0.8
 crit_rate = 0.02 + 0.05 + 0.15  #at end make this 0 to remove crit effect
 crit_dmg = 0.3
 attack = 0
+weapon_dmg_bonus = 0
+#trech set:
+weapon_dmg_bonus += 0.22
 
-weapon_dmg_bonus = 0.1
 enemy_dmg_bonus = 0
-bullet_dmg_bonus = 0.05 # ammo buff
+bullet_dmg_bonus = 0.05 # ammo budd
 
 # calib
-crit_rate += 0.063+0.087
+crit_rate += 0.062+0.078
 
-
+# bullseye
 vulnerability = 0
-# bullseye toggle
 bullseye = 1
 if bullseye:
     vulnerability = 0.16
 
-weapon_dmg_bonus += 0.2 # covered advance
+# mods
+enemy_dmg_bonus += 0.06 + 0.06 + 0.08
+weapon_dmg_bonus += 0.06 + 0.024 + 0.048 + 0.2  #0.2-covered advance
+crit_dmg += 0.15 + 0.12 + 0.12 + 0.15 + 0.15
+weakspot_dmg_bonus += 0
 
 # bounce effect
-base_bounce_chance = 0.73   #Given for HAMR # changing to observed -2, theory: 75
+#Given for HAMR
+base_bounce_chance = 0.73    # changing to observed -2, theory: 75
 bounce_chance = base_bounce_chance
 bounce_hits = 4
 
-bounce_dmg_bonus = 1.25/3   # every 3rd shot + 125% bouce dmg (every 7th, but HAMR's sharp blade triggers 2 bounces)
+# Mods:
+bounce_dmg_bonus = 0.06 + 0.048
+bounce_crit_dmg_bonus = 0.25 + 0.20
+bounce_dmg_bonus += 1.25/3  # every 3rd shot + 125% bouce dmg (every 7th, but HAMR's sharp blade triggers 2 bounces)
                             # targeted strike was 8.5% worse (42863.60/46840.11)
-bounce_crit_rate_bonus = 0.1    # weapon main stat
-bounce_crit_dmg_bonus = 0.25    # weapon main stat
 bounce_weakspot_bonus = 0
+bounce_crit_rate_bonus = 0 + 0.1
 bounce_chance += base_bounce_chance*0.048
-
-list_mod_substats = {"hat":{"cd": 0.15, "wp_dmg": 0, "ene_dmg": 0.06}, 
-                     "mask": {"bounce_dmg": 0.06, "bounce_cd": 0, "bounce_chance": 0.048}, 
-                     "top":{"cd": 0.12, "wp_dmg": 0.06, "ene_dmg": 0.06}, 
-                     "pant":{"cd": 0.12, "wp_dmg": 0.024, "ene_dmg": 0}, 
-                     "gloves":{"cd": 0.12, "wp_dmg": 0.048, "ene_dmg": 0.08}, 
-                     "shoes":{"cd": 0.15, "wp_dmg": 0, "ene_dmg": 0}, 
-                     "weapon": {"bounce_dmg": 0.048, "bounce_cd": 0.2, "ene_dmg": 0.08}}
-
-for key in list_mod_substats:
-    dict_armor = list_mod_substats[key]
-    for stat in dict_armor:
-        match(stat):
-            case "cd":
-                crit_dmg += dict_armor[stat]
-            case "wp_dmg":
-                weapon_dmg_bonus += dict_armor[stat]
-            case "ene_dmg":
-                enemy_dmg_bonus += dict_armor[stat]
-            case "bounce_dmg":
-                bounce_dmg_bonus += dict_armor[stat]
-            case "bounce_cd":
-                bounce_crit_dmg_bonus += dict_armor[stat]
-            case "bounce_chance":
-                bounce_chance += dict_armor[stat]*base_bounce_chance
-            case "wk_dmg":
-                weakspot_dmg_bonus += dict_armor[stat]
-                
-
-
-# lone wolf
-crit_dmg += 0.08*2
 
 
 # cradle:
@@ -107,15 +82,8 @@ Total_per_hit = get_bounce_damage(bounce_chance, bounce_hits, bounce_dmg_bonus, 
 
 # testing
 # database of manual per hit tests:
-dmg_per_mag = [441, 540, 380, 377, 635]
-result =  -15000    # bulls eye proc
-mag_size = 9
-n = len(dmg_per_mag)
-for i in dmg_per_mag:
-    result+=i*1000
-result = result/mag_size/n
-# result = ((348 + 293 + 457 + 492 + 421 + 450 + 358 + 562 + 450 + 366 + 355)*1000/11 - 15000) / 9 # Non cradle ((250 + 285 + 369 + 385 + 299 + 341 + 267 + 356)*1000/8 - 14000) / 9
-print(f"\nPer shot dmg is: {Total_per_hit:.2f}\t\tManual: {result}\nTheory's Match ratio:   {Total_per_hit/result*100:.0f}%\n")
+result = ((600)*1000/1 - 15000) / 9 # Non cradle ((250 + 285 + 369 + 385 + 299 + 341 + 267 + 356)*1000/8 - 14000) / 9      # ((348 + 293 + 457 + 492 + 421 + 450 + 358 + 562 + 450 + 366 + 355)*1000/11 - 15000) / 9
+print(f"\nPer shot dmg is: {Total_per_hit:.2f}\t\tManual: {result:.2f}\nTheory's Match ratio:   {Total_per_hit/result*100:.0f}%\n")
 
 # new damage:
 

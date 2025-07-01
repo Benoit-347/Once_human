@@ -49,3 +49,18 @@ def get_bounce_damage(bounce_chance, bounce_hits, bounce_dmg_bonus, bounce_crit_
     Total_hit_dmg = damage + avg_bounce
     
     return Total_hit_dmg
+
+def get_bounce_damage_2(bounce_chance, bounce_hits, bounce_dmg_bonus, bounce_crit_rate_bonus, bounce_crit_dmg_bonus, bounce_weakspot_bonus, base_, attack_, weaponn_dmg_, weakspot_dmg_bonus,crit_rate, crit_damage, enemy_dmg_bonus, bullet_dmg_bonus, vulnerability, weakspot = False):
+    if weakspot:
+        damage = base_*(1+attack_)*(1+weaponn_dmg_+bullet_dmg_bonus)*(1+crit_rate*crit_damage)*(1+weakspot_dmg_bonus)*(1 + enemy_dmg_bonus)*(1 + vulnerability)
+    else:
+        damage = base_*(1+attack_)*(1+weaponn_dmg_+bullet_dmg_bonus)*(1+crit_rate*crit_damage)*(1 + enemy_dmg_bonus)*(1 + vulnerability)
+
+    one_bounce = 0.4*base_*(1+attack_)*(1+weaponn_dmg_+bullet_dmg_bonus)*(1+(crit_rate + bounce_crit_rate_bonus)*(crit_damage+bounce_crit_dmg_bonus))*(1 + enemy_dmg_bonus)*(1+bounce_dmg_bonus)*(1 + vulnerability)
+    bounce_hits_per_shot = (bounce_chance)*bounce_hits
+    one_bounce_weakspot_avg = one_bounce*(0.52 + 0.48*(1+ weakspot_dmg_bonus + bounce_weakspot_bonus))    # obv data is 52, 48      #theory: 50, 50
+    avg_bounce = bounce_hits_per_shot*one_bounce_weakspot_avg
+
+    Total_hit_dmg = damage + avg_bounce
+    
+    return Total_hit_dmg
