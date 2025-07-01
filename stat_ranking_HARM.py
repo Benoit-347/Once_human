@@ -34,13 +34,38 @@ bounce_crit_dmg_bonus = 0.25    # weapon main stat
 bounce_weakspot_bonus = 0
 bounce_chance += base_bounce_chance*0.048
 
-list_mod_substats = {"hat":{"cd": 0.15, "wp_dmg": 0, "ene_dmg": 0.06}, 
-                     "mask": {"bounce_dmg": 0.06, "bounce_cd": 0, "bounce_chance": 0.048}, 
-                     "top":{"cd": 0.12, "wp_dmg": 0.06, "ene_dmg": 0.06}, 
-                     "pant":{"cd": 0.12, "wp_dmg": 0.024, "ene_dmg": 0}, 
-                     "gloves":{"cd": 0.12, "wp_dmg": 0.048, "ene_dmg": 0.08}, 
-                     "shoes":{"cd": 0.15, "wp_dmg": 0, "ene_dmg": 0}, 
-                     "weapon": {"bounce_dmg": 0.048, "bounce_cd": 0.2, "ene_dmg": 0.08}}
+
+# input mod substats:
+"""
+# great ones
+list_mod_substats = {"hat":{"cd": 0.15, "wp": 0, "enemy_dmg": 0.06}, 
+                     "mask": {"bounce": 0.06, "bounce crit": 0.1, "enemy_dmg": 0.06, "bounce_chance_1": 0.06}, 
+                     "top":{"cd": 0.12, "wp": 0.06, "enemy_dmg": 0.06}, 
+                     "pant":{"cd": 0.06, "wp": 0, "enemy_dmg": 0.06}, 
+                     "gloves":{"cd": 0.12, "wp": 0.048, "enemy_dmg": 0.06}, 
+                     "shoes":{"cd": 0.09, "wp": 0, "enemy_dmg": 0.06}, 
+                     "weapon": {"bounce": 0.06, "bounce crit": 0.25, "enemy_dmg": 0.048}}
+"""
+"""
+# elite:
+list_mod_substats = {"hat":{"cd": 0.06, "wp": 0, "enemy_dmg": 0.075}, 
+                     "mask": {"bounce": 0.036, "bounce crit": 0.1, "enemy_dmg": 0.075, "bounce_chance_1": 0.024}, 
+                     "top":{"cd": 0.12, "wp": 0.06, "enemy_dmg": 0.06}, 
+                     "pant":{"cd": 0.12, "wp": 0.024, "enemy_dmg": 0.075}, 
+                     "gloves":{"cd": 0.09, "wp": 0.048, "enemy_dmg": 0.075}, 
+                     "shoes":{"cd": 0.15, "wp": 0, "enemy_dmg": 0.06}, 
+                     "weapon": {"bounce": 0.012, "bounce_chance_1": 0.06, "bounce crit": 0, "enemy_dmg": 0.075}}
+"""
+
+# normal
+list_mod_substats = {"hat":{"cd": 0.06, "wp": 0, "enemy_dmg": 0.08}, 
+                     "mask": {"bounce": 0.024, "bounce crit": 0, "enemy_dmg": 0.10, "bounce_chance_1": 0.06}, 
+                     "top":{"cd": 0.12, "wp": 0.06, "enemy_dmg": 0.06}, 
+                     "pant":{"cd": 0.12, "wp": 0.024, "enemy_dmg": 0}, 
+                     "gloves":{"cd": 0.15, "wp": 0, "enemy_dmg": 0.08}, 
+                     "shoes":{"cd": 0.12, "wp": 0, "enemy_dmg": 0.10}, 
+                     "weapon": {"bounce": 0.048, "bounce crit": 0.20, "enemy_dmg": 0.08}}
+
 
 for key in list_mod_substats:
     dict_armor = list_mod_substats[key]
@@ -48,15 +73,15 @@ for key in list_mod_substats:
         match(stat):
             case "cd":
                 crit_dmg += dict_armor[stat]
-            case "wp_dmg":
+            case "wp":
                 weapon_dmg_bonus += dict_armor[stat]
-            case "ene_dmg":
+            case "enemy_dmg":
                 enemy_dmg_bonus += dict_armor[stat]
-            case "bounce_dmg":
+            case "bounce":
                 bounce_dmg_bonus += dict_armor[stat]
-            case "bounce_cd":
+            case "bounce_crit":
                 bounce_crit_dmg_bonus += dict_armor[stat]
-            case "bounce_chance":
+            case "bounce_chance_1":
                 bounce_chance += dict_armor[stat]*base_bounce_chance
             case "wk_dmg":
                 weakspot_dmg_bonus += dict_armor[stat]
@@ -107,7 +132,7 @@ Total_per_hit = get_bounce_damage(bounce_chance, bounce_hits, bounce_dmg_bonus, 
 
 # testing
 # database of manual per hit tests:
-dmg_per_mag = [441, 540, 380, 377, 635]
+dmg_per_mag = [526]
 result =  -15000    # bulls eye proc
 mag_size = 9
 n = len(dmg_per_mag)
@@ -151,7 +176,7 @@ for key in sorted_dict_desc:
     damage = sorted_dict_desc[key]
     print(f"Number {i}: {key}\tRatio Increase: {damage/Total_per_hit*100-100:.2f}%\tdamage: {damage:.0f}")
 
-print(f"wk: {new_wk*100:.0f}%\twp: {new_wp*100:.0f}%\t\tcrit: {new_crit_dmg*100:.0f}%\tcr: {new_crit_rate*100:.0f}%\t\tbounce: {new_bounce_dmg*100:.0f}%\tbounce crit: {new_bounce_crit*100:.0f}%\tenemy: {new_enemy_dmg_bonus*100:.0f}%")
+print(f"wk: {new_wk*100:.0f}%\twp: {new_wp*100:.0f}%\t\tcrit: {new_crit_dmg*100:.0f}%\tcr: {new_crit_rate*100:.0f}%\t\tbounce: {new_bounce_dmg*100:.0f}%\tbounce crit: {new_bounce_crit*100:.0f}%\tenemy: {new_enemy_dmg_bonus*100:.0f}%\t chance: {bounce_chance*100:.0f}%")
 
 import csv
 # writing output to file:
