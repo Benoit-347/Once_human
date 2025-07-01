@@ -23,7 +23,7 @@ if bullseye:
 weapon_dmg_bonus += 0.2 # covered advance
 
 # bounce effect
-base_bounce_chance = 0.73   #Given for HAMR # changing to observed -2, theory: 75
+base_bounce_chance = 0.75
 bounce_chance = base_bounce_chance
 bounce_hits = 4
 
@@ -152,3 +152,17 @@ for key in sorted_dict_desc:
     print(f"Number {i}: {key}\tRatio Increase: {damage/Total_per_hit*100-100:.2f}%\tdamage: {damage:.0f}")
 
 print(f"wk: {new_wk*100:.0f}%\twp: {new_wp*100:.0f}%\t\tcrit: {new_crit_dmg*100:.0f}%\tcr: {new_crit_rate*100:.0f}%\t\tbounce: {new_bounce_dmg*100:.0f}%\tbounce crit: {new_bounce_crit*100:.0f}%\tenemy: {new_enemy_dmg_bonus*100:.0f}%")
+
+import csv
+# writing output to file:
+file_name = "stat_ranking.csv"
+lines = []
+
+
+for key in sorted_dict_desc:
+    damage = sorted_dict_desc[key]
+    lines.append([key.strip(), round(damage/Total_per_hit-1, 3) ])
+
+with open(file_name, 'w') as file_1:
+    writer_object = csv.writer(file_1, lineterminator="\n")
+    writer_object.writerows(lines)
